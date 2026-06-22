@@ -25,6 +25,13 @@ const server = http.createServer(async (req, res) => {
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
   if (req.method === 'OPTIONS') { res.writeHead(204); res.end(); return; }
 
+  // ── Health check ──────────────────────────────────────
+  if (req.method === 'GET' && (req.url === '/' || req.url === '/health')) {
+    res.writeHead(200, { 'Content-Type': 'application/json' });
+    res.end(JSON.stringify({ status: 'ok', timestamp: new Date().toISOString() }));
+    return;
+  }
+
   // ── Proxy para DeepSeek ───────────────────────────────
   // Aceita ambas as rotas:
   //   /api/chat  — legacy (versão anterior do app)
